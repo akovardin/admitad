@@ -42,7 +42,14 @@ func (s *AdvCampaignsSuite) TestAdvCampaigns() {
 		[]string{"advcampaigns", "banners", "websites"},
 	)
 	client.Init(&Token{})
-	campaigns, err := client.AdvCampaigns(url.Values{})
+
+	type Campaigns struct {
+		Results []map[string]interface{} `json:"results"`
+	}
+
+	campaigns := Campaigns{}
+
+	err := client.Call("advcampaigns", "GET", url.Values{}, &campaigns)
 	s.Assertions.NoError(err)
 	s.Assertions.Len(campaigns.Results, 2)
 }
@@ -56,7 +63,13 @@ func (s *AdvCampaignsSuite) TestAdvCampaignsByWebsite() {
 	)
 	client.Init(&Token{})
 
-	campaigns, err := client.AdvCampaignsByWebsite(1, url.Values{})
+	type Campaigns struct {
+		Results []map[string]interface{} `json:"results"`
+	}
+
+	campaigns := Campaigns{}
+
+	err := client.Call("advcampaigns/website/1", "GET", url.Values{}, &campaigns)
 	s.Assertions.NoError(err)
 	s.Assertions.Len(campaigns.Results, 2)
 }
@@ -70,7 +83,13 @@ func (s *AdvCampaignsSuite) TestAdvCampaign() {
 	)
 	client.Init(&Token{})
 
-	campaign, err := client.AdvCampaign(1, url.Values{})
+	type Campaign struct {
+		Id int `json:"id"`
+	}
+
+	campaign := Campaign{}
+
+	err := client.Call("advcampaigns/1", "GET", url.Values{}, &campaign)
 	s.Assertions.NoError(err)
 	s.Assertions.EqualValues(3063, campaign.Id)
 }

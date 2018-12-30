@@ -8,21 +8,21 @@ import (
 )
 
 type Client struct {
-	clientId string
-	auth     string
-	url      string
-	client   *http.Client
-	token    *Token
-	scope    string
+	clientId     string
+	base64Header string
+	url          string
+	client       *http.Client
+	token        *Token
+	scope        string
 }
 
-func NewClient(url, auth, id string, scope []string) *Client {
+func NewClient(url, base64Header, clientId string, scope []string) *Client {
 	client := &Client{
-		auth:     auth,
-		url:      url,
-		client:   &http.Client{},
-		clientId: id,
-		scope:    strings.Join(scope, " "),
+		base64Header: base64Header,
+		url:          url,
+		client:       &http.Client{},
+		clientId:     clientId,
+		scope:        strings.Join(scope, " "),
 	}
 
 	return client
@@ -36,6 +36,21 @@ type ApiError struct {
 
 func (e ApiError) Error() string {
 	return e.ErrorName + ": " + e.ErrorDescription
+}
+
+func (c *Client) Call(url, method string, params url.Values, result interface{}) error {
+	response, err := c.request(url, method, params)
+	if err != nil {
+		return err
+	}
+
+	defer response.Body.Close()
+
+	if err := json.NewDecoder(response.Body).Decode(result); err != nil {
+		return err
+	}
+
+	return err
 }
 
 func (c *Client) request(u, m string, params url.Values) (*http.Response, error) {
@@ -89,7 +104,7 @@ func (c *Client) Token() (*Token, error) {
 		return nil, err
 	}
 
-	request.Header.Add("Authorization", "Basic "+c.auth)
+	request.Header.Add("Authorization", "Basic "+c.base64Header)
 	response, err := c.client.Do(request)
 	if err != nil {
 		return nil, err

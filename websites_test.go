@@ -41,9 +41,15 @@ func (s *WebsitesSuite) TestWebsites() {
 	)
 	client.Init(&Token{})
 
-	websites, err := client.Websites(url.Values{})
+	type Websites struct {
+		Results []map[string]interface{} `json:"results"`
+	}
+
+	result := Websites{}
+
+	err := client.Call("websites", "GET", url.Values{}, &result)
 	s.Assertions.NoError(err)
-	s.Assertions.Len(websites.Results, 2)
+	s.Assertions.Len(result.Results, 2)
 }
 
 func (s *WebsitesSuite) Website() {
@@ -55,9 +61,15 @@ func (s *WebsitesSuite) Website() {
 	)
 	client.Init(&Token{})
 
-	website, err := client.Website(123, url.Values{})
+	type Website struct {
+		Name string `json:"name"`
+	}
+
+	result := Website{}
+
+	err := client.Call("websites/123", "GET", url.Values{}, &result)
 	s.Assertions.NoError(err)
-	s.Assertions.EqualValues("Язык программирования Go", website.Name)
+	s.Assertions.EqualValues("Язык программирования Go", result.Name)
 }
 
 func TestWebsitesSuite(t *testing.T) {

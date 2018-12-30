@@ -38,7 +38,13 @@ func (s *BannersSuite) TestBanners() {
 		[]string{"advcampaigns", "banners", "websites"},
 	)
 	client.Init(&Token{})
-	campaigns, err := client.Banners(1, 2, url.Values{})
+
+	type Banners struct {
+		Results []map[string]interface{} `json:"results"`
+	}
+
+	campaigns := Banners{}
+	err := client.Call("banners/1/website/2", "GET", url.Values{}, &campaigns)
 	s.Assertions.NoError(err)
 	s.Assertions.Len(campaigns.Results, 2)
 }
