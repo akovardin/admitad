@@ -7,27 +7,6 @@ import (
 	"strings"
 )
 
-type Client struct {
-	clientId     string
-	base64Header string
-	url          string
-	client       *http.Client
-	token        *Token
-	scope        string
-}
-
-func NewClient(url, base64Header, clientId string, scope []string) *Client {
-	client := &Client{
-		base64Header: base64Header,
-		url:          url,
-		client:       &http.Client{},
-		clientId:     clientId,
-		scope:        strings.Join(scope, " "),
-	}
-
-	return client
-}
-
 type ApiError struct {
 	ErrorName        string `json:"error"`
 	ErrorCode        int    `json:"error_code"`
@@ -36,6 +15,40 @@ type ApiError struct {
 
 func (e ApiError) Error() string {
 	return e.ErrorName + ": " + e.ErrorDescription
+}
+
+
+type Token struct {
+	Id           int    `json:"id"`
+	Username     string `json:"username"`
+	FirstName    string `json:"first_name"`
+	LastName     string `json:"last_name"`
+	Language     string `json:"language"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	AccessToken  string `json:"access_token"`
+	Scope        string `json:"scope"`
+}
+
+type Client struct {
+	clientId     string
+	base64Header string
+	url          string
+	token        *Token
+	scope        string
+
+	client *http.Client
+}
+
+func NewClient(url, base64Header, clientId string, scope []string) *Client {
+	return &Client{
+		base64Header: base64Header,
+		url:          url,
+		clientId:     clientId,
+		scope:        strings.Join(scope, " "),
+		client:       &http.Client{},
+	}
 }
 
 func (c *Client) Call(url, method string, params url.Values, result interface{}) error {
@@ -77,19 +90,6 @@ func (c *Client) request(u, m string, params url.Values) (*http.Response, error)
 		return nil, err
 	}
 	return nil, e
-}
-
-type Token struct {
-	Id           int    `json:"id"`
-	Username     string `json:"username"`
-	FirstName    string `json:"first_name"`
-	LastName     string `json:"last_name"`
-	Language     string `json:"language"`
-	TokenType    string `json:"token_type"`
-	ExpiresIn    int    `json:"expires_in"`
-	RefreshToken string `json:"refresh_token"`
-	AccessToken  string `json:"access_token"`
-	Scope        string `json:"scope"`
 }
 
 func (c *Client) Token() (*Token, error) {
