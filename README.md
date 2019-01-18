@@ -44,34 +44,53 @@ client.Init(token)
 Fetch banners from API
 
 ```go
+type Websites struct {
+    Results []map[string]interface{} `json:"results"`
+}
+    
+type Campaigns struct {
+    Results []map[string]interface{} `json:"results"`
+}
+
+type Banners struct {
+    Results []map[string]interface{} `json:"results"`
+}
+
 websites := &Websites{}
 err = client.Call("websites", "GET", url.Values{}, websites)
 if err != nil {
-    return nil, err
+    log.Fatal(err)
 }
 
-banners := []Banner{}
+banners := []map[string]interface{}{}
 for _, w := range websites.Results {
     p := url.Values{}
     p.Add("limit", "4")
     campaigns := Campaigns{}
-    err := client.Call("advcampaigns/website/" + strconv.Itoa(w.Id), "GET", p, &campaigns)
+    err := client.Call("advcampaigns/website/"+strconv.Itoa(int(w["id"].(float64))), "GET", p, &campaigns)
     if err != nil {
-        return nil, err
+        log.Println(err)
+        continue
     }
 
     for _, c := range campaigns.Results {
         list := &Banners{}
-        err := client.Call("banners/"+strconv.Itoa(c.Id)+"/website/"+strconv.Itoa(w.Id), "GET", url.Values{}, list)
+        err := client.Call("banners/"+strconv.Itoa(int(c["id"].(float64)))+"/website/"+strconv.Itoa(int(w["id"].(float64))), "GET", url.Values{}, list)
         if err != nil {
-            return nil, err
+            log.Println(err)
+            continue
         }
 
         banners = append(banners, list.Results...)
     }
 }
 
-fmt.Println(banners)
+for _, b := range banners {
+    fmt.Println("==============")
+    for k, v := range b {
+        fmt.Println(k+":", v)
+    }
+}
 ```
 
 `Banner`, `Websites`, `Campaigns` - it's types from current application, not from package
