@@ -54,7 +54,7 @@ banners := []Banner{}
 for _, w := range websites.Results {
     p := url.Values{}
     p.Add("limit", "4")
-    campaigns := AdvCampaigns{}
+    campaigns := Campaigns{}
     err := client.Call("advcampaigns/website/" + strconv.Itoa(w.Id), "GET", p, &campaigns)
     if err != nil {
         return nil, err
@@ -74,7 +74,7 @@ for _, w := range websites.Results {
 fmt.Println(banners)
 ```
 
-`Banner`, `Websites`, `AdvCampaigns`, `Banners` - it's types from current application, not from package
+`Banner`, `Websites`, `Campaigns` - it's types from current application, not from package
 
 ## Credentials
 

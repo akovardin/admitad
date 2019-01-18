@@ -17,7 +17,6 @@ func (e ApiError) Error() string {
 	return e.ErrorName + ": " + e.ErrorDescription
 }
 
-
 type Token struct {
 	Id           int    `json:"id"`
 	Username     string `json:"username"`
