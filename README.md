@@ -97,4 +97,4 @@ for _, b := range banners {
 
 ## Credentials
 
-You can get `base64Header` and `clientId` here: https://www.admitad.com/ru/webmaster/account/settings/credentials/
+You can get `base64Header` and `clientId` here: [https://www.admitad.com/ru/webmaster/account/settings/credentials/](https://www.admitad.com/ru/webmaster/account/settings/credentials/)
