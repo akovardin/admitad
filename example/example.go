@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	base64Header = "MTY4ZDdiZDYxNzE2MmM0ZmYwMGFlMzNlMTdlYjVlOjNmMTQ0MmNkMDBmYTNkYWMwNDk5MmExYjZjZDkxMg=="
-	clientId     = "168d7bd617162c4ff00ae33e17eb5e"
+	base64Header = "xxxxx=="
+	clientId     = "xxx"
 )
 
 type Websites struct {
